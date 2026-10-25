@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e9">
+<title>Кулинарный дневник</title>
+<style>
+:root{--bg:#f6f1e9;--ink:#2b2622;--mute:#8a8178;--line:#ddd4c7;--acc:#a4472b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 Roboto,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+header{padding:22px 20px 10px}
+h1{font:400 28px Georgia,"Times New Roman",serif;margin:0}
+main{flex:1;overflow-y:auto}
+.page{display:none}.page.on{display:block}
+.tools{padding:0 20px 8px}
+input{width:100%;font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:4px;padding:10px 12px;outline:none}
+input:focus{border-color:var(--ink)}
+#cats{display:flex;gap:8px;padding:12px 0 4px;overflow-x:auto}
+.cat{font:inherit;font-size:14px;color:var(--ink);background:none;border:1px solid var(--line);border-radius:4px;padding:6px 12px;white-space:nowrap}
+.cat.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+ul{list-style:none;margin:0;padding:0}
+#list>li{border-top:1px solid var(--line)}
+.row{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;padding:14px 20px}
+.nm{display:block;font-size:17px}
+.mt{display:block;font-size:13px;color:var(--mute);margin-top:2px}
+.det{padding:0 20px 16px;font-size:15px}
+.det h3{font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:12px 0 6px}
+.det ul li{padding:3px 0}
+.det ol{margin:0;padding-left:20px}.det ol li{padding:3px 0}
+.none{padding:20px;color:var(--mute)}
+nav{display:flex;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;font:inherit;font-size:14px;color:var(--mute);background:none;border:0;padding:14px 0}
+nav button.on{color:var(--acc)}
+</style>
+</head>
+<body>
+<header><h1 id="ttl">Рецепты</h1></header>
+<main>
+  <section class="page on" id="p-recipes">
+    <div class="tools">
+      <input id="q" type="search" placeholder="Поиск по названию">
+      <div id="cats"></div>
+    </div>
+    <ul id="list"></ul>
+  </section>
+  <section class="page" id="p-diary"></section>
+  <section class="page" id="p-shop"></section>
+  <section class="page" id="p-me"></section>
+</main>
+<nav>
+  <button class="on" data-p="recipes" data-t="Рецепты">Рецепты</button>
+  <button data-p="diary" data-t="Дневник">Дневник</button>
+  <button data-p="shop" data-t="Покупки">Покупки</button>
+  <button data-p="me" data-t="Профиль">Профиль</button>
+</nav>
+<script>
+const R=[
+{n:"Борщ",c:"Основное",t:90,i:"Говядина на кости — 500 г;Свёкла — 2 шт.;Капуста — 300 г;Картофель — 3 шт.;Морковь — 1 шт.;Лук — 1 шт.;Томатная паста — 2 ст. л.",s:"Сварить бульон из говядины, около полутора часов.|Обжарить лук, морковь и свёклу с томатной пастой.|Добавить в бульон картофель, через 10 минут — капусту.|Выложить зажарку, довести до кипения, дать настояться 20 минут."},
+{n:"Сырники",c:"Завтрак",t:30,i:"Творог — 400 г;Яйцо — 1 шт.;Мука — 3 ст. л.;Сахар — 2 ст. л.;Соль — щепотка",s:"Смешать творог с яйцом, сахаром и солью.|Добавить муку, вымесить мягкое тесто.|Сформировать небольшие лепёшки, обвалять в муке.|Обжарить на среднем огне по 3 минуты с каждой стороны."},
+{n:"Овсяная каша с яблоком",c:"Завтрак",t:15,i:"Овсяные хлопья — 80 г;Молоко — 250 мл;Яблоко — 1 шт.;Корица — на кончике ножа",s:"Довести молоко до кипения, всыпать хлопья.|Варить 7 минут, помешивая.|Добавить нарезанное яблоко и корицу, накрыть на 3 минуты."},
+{n:"Паста с томатами и базиликом",c:"Основное",t:25,i:"Спагетти — 200 г;Помидоры в собственном соку — 400 г;Чеснок — 2 зубчика;Базилик — пучок;Оливковое масло — 2 ст. л.",s:"Отварить спагетти до состояния аль денте.|Обжарить чеснок на масле, добавить томаты, тушить 10 минут.|Смешать пасту с соусом, добавить базилик."},
+{n:"Куриный суп с лапшой",c:"Основное",t:50,i:"Куриные бёдра — 500 г;Морковь — 1 шт.;Лук — 1 шт.;Лапша — 80 г;Лавровый лист — 1 шт.",s:"Сварить бульон из курицы с луком и лавровым листом.|Достать мясо, нарезать, вернуть в кастрюлю.|Добавить морковь, через 10 минут — лапшу, варить 5 минут."},
+{n:"Шарлотка",c:"Десерты",t:50,i:"Яблоки — 4 шт.;Яйца — 3 шт.;Сахар — 150 г;Мука — 150 г",s:"Взбить яйца с сахаром до плотной пены.|Аккуратно вмешать муку.|Выложить яблоки в форму, залить тестом.|Выпекать при 180 °C около 35 минут."}
+];
+const cats=["Все","Завтрак","Основное","Десерты"];
+let cat="Все",q="";
+const $=s=>document.querySelector(s);
+function draw(){
+  $("#cats").innerHTML=cats.map(c=>`<button class="cat${c===cat?" on":""}" data-c="${c}">${c}</button>`).join("");
+  const l=R.filter(r=>(cat==="Все"||r.c===cat)&&r.n.toLowerCase().includes(q));
+  $("#list").innerHTML=l.length?l.map(r=>`<li><button class="row"><span class="nm">${r.n}</span><span class="mt">${r.c} · ${r.t} мин</span></button><div class="det" hidden><h3>Ингредиенты</h3><ul>${r.i.split(";").map(x=>`<li>${x}</li>`).join("")}</ul><h3>Приготовление</h3><ol>${r.s.split("|").map(x=>`<li>${x}</li>`).join("")}</ol></div></li>`).join(""):'<li class="none">Ничего не найдено</li>';
+}
+$("#cats").addEventListener("click",e=>{const b=e.target.closest(".cat");if(b){cat=b.dataset.c;draw()}});
+$("#q").addEventListener("input",e=>{q=e.target.value.trim().toLowerCase();draw()});
+$("#list").addEventListener("click",e=>{const b=e.target.closest(".row");if(b){const d=b.nextElementSibling;d.hidden=!d.hidden}});
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("on",p.id==="p-"+b.dataset.p));
+  $("#ttl").textContent=b.dataset.t;
+}));
+draw();
+</script>
+</body>
+</html>
